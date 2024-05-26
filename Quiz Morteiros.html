@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz de Morteiros</title>
+    <style>
+        .pass {
+            color: green;
+            animation: fadeIn 2s;
+        }
+        .fail {
+            color: red;
+            animation: shake 0.5s;
+        }
+        .correct-answer {
+            color: blue;
+        }
+        .incorrect-answer {
+            color: red;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+    <script>
+        var previousPercentages = [];
+        var questions = [
+            {
+                question: "Qual é a distância máxima do Morteiro 120?",
+                answers: ["5000 metros", "6000 metros", "6500 metros", "7000 metros"],
+                correct: "6500 metros"
+            },
+            {
+                question: "Que tipo de arma é o Morteiro 120?",
+                answers: ["Arma individual", "Arma coletiva", "Arma automotora", "Arma semi-automática"],
+                correct: "Arma coletiva"
+            },
+            {
+                question: "O que significa se um morteiro é antecarga?",
+                answers: ["É carregado pela culatra", "É carregado pela lateral", "É carregado pela boca do cano", "É carregado automaticamente"],
+                correct: "É carregado pela boca do cano"
+            },
+            {
+                question: "Qual é o peso total do Morteiro 120?",
+                answers: ["350kg", "360kg", "369kg", "375kg"],
+                correct: "369kg"
+            },
+            {
+                question: "Qual é a elevação máxima e mínima do Morteiro 120?",
+                answers: ["Mínima 30Mils, Máxima 80Mils", "Mínima 35Mils, Máxima 85Mils", "Mínima 39Mils, Máxima 87Mils", "Mínima 40Mils, Máxima 90Mils"],
+                correct: "Mínima 39Mils, Máxima 87Mils"
+            },
+            {
+                question: "Qual é o alcance mínimo do Morteiro 120?",
+                answers: ["300 metros", "350 metros", "400 metros", "450 metros"],
+                correct: "400 metros"
+            },
+            {
+                question: "Qual é o alcance máximo do Morteiro 120?",
+                answers: ["6000 metros", "6200 metros", "6500 metros", "6800 metros"],
+                correct: "6500 metros"
+            },
+            {
+                question: "Qual é a cadência de tiro normal do Morteiro 120?",
+                answers: ["4 a 6 t.p.m", "5 a 7 t.p.m", "6 a 9 t.p.m", "7 a 10 t.p.m"],
+                correct: "6 a 9 t.p.m"
+            },
+            {
+                question: "Qual é a cadência máxima de tiro do Morteiro 120?",
+                answers: ["10 a 15 t.p.m", "12 a 18 t.p.m", "14 a 20 t.p.m", "16 a 22 t.p.m"],
+                correct: "12 a 18 t.p.m"
+            },
+            {
+                question: "O Morteiro 120 divide-se nas seguintes partes:",
+                answers: [
+                    "Cano, Suporte, Prato-base, Rodado de transporte, Olhal da clavija, Aparelho de pontaria, Palamenta e acessórios, Ferramentas e peças de reserva",
+                    "Cano, Suporte, Base, Rodado de transporte, Olhal da clavija, Aparelho de pontaria, Palamenta e acessórios, Ferramentas e peças de reserva",
+                    "Cano, Suporte, Prato-base, Rodado de transporte, Olhal da clavija, Aparelho de pontaria, Palamenta e acessórios, Ferramentas e peças de reserva",
+                    "Cano, Suporte, Prato-base, Rodado de transporte, Olhal da clavija, Aparelho de pontaria, Ferramentas e peças de reserva"
+                ],
+                correct: "Cano, Suporte, Prato-base, Rodado de transporte, Olhal da clavija, Aparelho de pontaria, Palamenta e acessórios, Ferramentas e peças de reserva"
+            },
+            {
+                question: "O cano do Morteiro 120 compreende:",
+                answers: ["Tubo e Culatra", "Tubo e Fecho", "Tubo e Mecanismo de disparo", "Tubo e Suporte"],
+                correct: "Tubo e Culatra"
+            },
+            {
+                question: "Qual é a Graduação, Numeração e Referenciação do Limbo no Morteiro 120?",
+                answers: [
+                    "Graduado de 0 a 6400 mil, Numerado de 100 em 100Mil e Referenciado de 50 em 50 mil",
+                    "Graduado de 0 a 6400 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil",
+                    "Graduado de 0 a 6400 mil, Numerado de 300 em 300Mil e Referenciado de 150 em 150 mil",
+                    "Graduado de 0 a 6400 mil, Numerado de 400 em 400Mil e Referenciado de 200 em 200 mil"
+                ],
+                correct: "Graduado de 0 a 6400 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil"
+            },
+            {
+                question: "Qual é a Graduação, Numeração e Referenciação do Sector no Morteiro 120?",
+                answers: [
+                    "Graduado de 600 a 1500 mil, Numerado de 100 em 100Mil e Referenciado de 50 em 50 mil",
+                    "Graduado de 700 a 1600 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil",
+                    "Graduado de 800 a 1700 mil, Numerado de 300 em 300Mil e Referenciado de 150 em 150 mil",
+                    "Graduado de 900 a 1800 mil, Numerado de 400 em 400Mil e Referenciado de 200 em 200 mil"
+                ],
+                correct: "Graduado de 700 a 1600 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil"
+            },
+            {
+                question: "A granada do Morteiro 120 divide-se em que partes?",
+                answers: ["Corpo, Cauda, Espoleta", "Corpo, Cauda, Estopim", "Corpo, Base, Espoleta", "Corpo, Base, Estopim"],
+                correct: "Corpo, Cauda, Espoleta"
+            },
+            {
+                question: "Quais são os tipos de munições do 120?",
+                answers: ["Explosivas, Químicas e Específicas", "Explosivas, Incendiárias e Específicas", "Explosivas, Químicas e Fragmentadas", "Explosivas, Incendiárias e Fragmentadas"],
+                correct: "Explosivas, Químicas e Específicas"
+            },
+            {
+                question: "Quantas estrias tem o Morteiro 10,7?",
+                answers: ["24 estrias", "20 estrias", "16 estrias", "12 estrias"],
+                correct: "24 estrias"
+            },
+            {
+                question: "O Morteiro 10,7 é de percutor fixo ou amovível?",
+                answers: ["Fixo", "Amovível"],
+                correct: "Fixo"
+            },
+            {
+                question: "Qual é o peso total do Morteiro 10,7?",
+                answers: ["289kg", "250kg", "300kg", "320kg"],
+                correct: "289kg"
+            },
+            {
+                question: "Qual é o alcance máximo do Morteiro 10,7?",
+                answers: ["5360 metros", "5000 metros", "5500 metros", "6000 metros"],
+                correct: "5360 metros"
+            },
+            {
+                question: "Qual é o alcance prático do Morteiro 10,7?",
+                answers: ["4500 metros", "4000 metros", "5000 metros", "5500 metros"],
+                correct: "4500 metros"
+            },
+            {
+                question: "Qual é o alcance mínimo do Morteiro 10,7?",
+                answers: ["840 metros", "800 metros", "900 metros", "950 metros"],
+                correct: "840 metros"
+            },
+            {
+                question: "Qual é a cadência de tiro normal do Morteiro 10,7?",
+                answers: ["5 a 10 t.p.m", "4 a 8 t.p.m", "6 a 12 t.p.m", "7 a 14 t.p.m"],
+                correct: "5 a 10 t.p.m"
+            },
+            {
+                question: "Qual é a Graduação, Numeração e Referenciação do Sector no Morteiro 10,7?",
+                answers: [
+                    "Graduado de 200 a 1600 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil",
+                    "Graduado de 300 a 1500 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil",
+                    "Graduado de 400 a 1400 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil",
+                    "Graduado de 500 a 1300 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil"
+                ],
+                correct: "Graduado de 200 a 1600 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil"
+            },
+            {
+                question: "Qual é a Graduação, Numeração e Referenciação do Limbo no Morteiro 10,7?",
+                answers: [
+                    "Graduado com 2 semi círculos de 0 a 3200 mil, Numerado de 400 em 400Mil e Referenciado de 100 em 100 mil",
+                    "Graduado com 2 semi círculos de 0 a 3200 mil, Numerado de 300 em 300Mil e Referenciado de 100 em 100 mil",
+                    "Graduado com 2 semi círculos de 0 a 3200 mil, Numerado de 200 em 200Mil e Referenciado de 100 em 100 mil",
+                    "Graduado com 2 semi círculos de 0 a 3200 mil, Numerado de 100 em 100Mil e Referenciado de 50 em 50 mil"
+                ],
+                correct: "Graduado com 2 semi círculos de 0 a 3200 mil, Numerado de 400 em 400Mil e Referenciado de 100 em 100 mil"
+            },
+            {
+                question: "Quais são os tipos de munições do Morteiro 10,7?",
+                answers: ["Explosivas, Químicas, Especiais, Exercício, Manobra", "Explosivas, Incendiárias, Especiais, Exercício, Manobra", "Explosivas, Químicas, Fragmentadas, Exercício, Manobra", "Explosivas, Incendiárias, Fragmentadas, Exercício, Manobra"],
+                correct: "Explosivas, Químicas, Especiais, Exercício, Manobra"
+            },
+            {
+                question: "O Morteiro 81 FBP é de percutor fixo ou amovível?",
+                answers: ["Fixo", "Amovível"],
+                correct: "Fixo"
+            },
+            {
+                question: "Qual é o alcance máximo do Morteiro 81 FBP?",
+                answers: ["3000 m", "2500 m", "3500 m", "4000 m"],
+                correct: "3000 m"
+            },
+            {
+                question: "Qual é o alcance mínimo do Morteiro 81 FBP?",
+                answers: ["100 m", "150 m", "200 m", "250 m"],
+                correct: "100 m"
+            },
+            {
+                question: "Qual é o peso total do Morteiro 81 FBP?",
+                answers: ["62,5 kg", "60 kg", "65 kg", "70 kg"],
+                correct: "62,5 kg"
+            },
+            {
+                question: "Qual é o raio de ação das granadas do Morteiro 81 FBP?",
+                answers: ["35 m", "30 m", "40 m", "45 m"],
+                correct: "35 m"
+            },
+            {
+                question: "O Morteiro 81 FBP divide-se em que partes?",
+                answers: ["Cano, Prato base, Bipe, Aparelho de Pontaria", "Cano, Prato base, Bipe, Aparelho de Disparo", "Cano, Prato base, Suporte, Aparelho de Pontaria", "Cano, Prato base, Suporte, Aparelho de Disparo"],
+                correct: "Cano, Prato base, Bipe, Aparelho de Pontaria"
+            },
+            {
+                question: "Qual é a Graduação, Numeração e Referenciação do Limbo no Morteiro 81 FBP?",
+                answers: [
+                    "Graduado de 0 a 6400 mil, Numerado de 200 em 200Mil",
+                    "Graduado de 0 a 6400 mil, Numerado de 100 em 100Mil e Referenciado de 50 em 50 mil",
+                    "Graduado de 0 a 6400 mil, Numerado de 300 em 300Mil e Referenciado de 150 em 150 mil",
+                    "Graduado de 0 a 6400 mil, Numerado de 400 em 400Mil e Referenciado de 200 em 200 mil"
+                ],
+                correct: "Graduado de 0 a 6400 mil, Numerado de 200 em 200Mil"
+            },
+            {
+                question: "Qual é a Graduação, Numeração e Referenciação do Setor no Morteiro 81 FBP?",
+                answers: [
+                    "Graduado de 4 a 90 graus, Numerado de 10 em 10 graus e Referenciado de 1 em 1 grau",
+                    "Graduado de 4 a 90 graus, Numerado de 5 em 5 graus e Referenciado de 1 em 1 grau",
+                    "Graduado de 0 a 90 graus, Numerado de 10 em 10 graus e Referenciado de 2 em 2 graus",
+                    "Graduado de 0 a 90 graus, Numerado de 5 em 5 graus e Referenciado de 1 em 1 grau"
+                ],
+                correct: "Graduado de 4 a 90 graus, Numerado de 10 em 10 graus e Referenciado de 1 em 1 grau"
+            },
+            {
+                question: "O Morteiro 81 L16A2 é de percutor fixo ou amovível?",
+                answers: ["Fixo", "Fixo mas amovível", "Amovível", "Nenhum"],
+                correct: "Fixo mas amovível"
+            },
+            {
+                question: "Qual é o alcance máximo do Morteiro 81 L16A2?",
+                answers: ["5000 metros", "6000 metros", "5650 metros", "7000 metros"],
+                correct: "5650 metros"
+            },
+            {
+                question: "Qual é o alcance mínimo do Morteiro 81 L16A2?",
+                answers: ["300 metros", "350 metros", "475 metros", "450 metros"],
+                correct: "475 metros"
+            },
+            {
+                question: "Qual é a elevação máxima e mínima do Morteiro 81 L16A2?",
+                answers: ["Máxima 1515 Mils, Mínima 800 Mils", "Máxima 1600 Mils, Mínima 900 Mils", "Máxima 1500 Mils, Mínima 750 Mils", "Máxima 1400 Mils, Mínima 700 Mils"],
+                correct: "Máxima 1515 Mils, Mínima 800 Mils"
+            },
+            {
+                question: "Qual é a cadência de tiro normal do Morteiro 81 L16A2?",
+                answers: ["10 tiros por minuto", "15 tiros por minuto", "20 tiros por minuto", "25 tiros por minuto"],
+                correct: "15 tiros por minuto"
+            },
+            {
+                question: "Qual é o peso total do Morteiro 81 L16A2?",
+                answers: ["35,35 kg", "36,35 kg", "38,35 kg", "39,35 kg"],
+                correct: "39,35 kg"
+            },
+            {
+                question: "O Morteiro 81 L16A2 divide-se em que partes?",
+                answers: ["Cano, Suporte, Prato base, Aparelho de pontaria, Ferramentas, peças de reserva e acessórios", "Cano, Suporte, Prato base, Bipe, Aparelho de pontaria", "Cano, Suporte, Prato base, Bipe, Ferramentas", "Cano, Suporte, Prato base, Aparelho de pontaria, Bipe, Acessórios"],
+                correct: "Cano, Suporte, Prato base, Aparelho de pontaria, Ferramentas, peças de reserva e acessórios"
+            },
+            {
+                question: "Qual é a graduação e numeração do limbo no Morteiro 81 L16A2?",
+                answers: ["Graduado de 0 a 6400 mils, Numerado de 200 em 200 mils", "Graduado de 0 a 6000 mils, Numerado de 100 em 100 mils", "Graduado de 0 a 6500 mils, Numerado de 150 em 150 mils", "Graduado de 0 a 6300 mils, Numerado de 300 em 300 mils"],
+                correct: "Graduado de 0 a 6400 mils, Numerado de 200 em 200 mils"
+            },
+            {
+                question: "Qual é a graduação e numeração do setor no Morteiro 81 L16A2?",
+                answers: ["Graduado de 600 a 1600 mils, Numerado de 200 em 200 mils", "Graduado de 500 a 1500 mils, Numerado de 100 em 100 mils", "Graduado de 700 a 1700 mils, Numerado de 300 em 300 mils", "Graduado de 800 a 1800 mils, Numerado de 400 em 400 mils"],
+                correct: "Graduado de 600 a 1600 mils, Numerado de 200 em 200 mils"
+            },
+            {
+                question: "O Morteiro 60mm é de carregamento pela boca ou pela culatra?",
+                answers: ["Pela boca", "Pela culatra"],
+                correct: "Pela boca"
+            },
+            {
+                question: "Qual é o tipo de alma do Morteiro 60mm?",
+                answers: ["Alma lisa", "Alma raiada"],
+                correct: "Alma lisa"
+            },
+            {
+                question: "Como é feito o disparo no Morteiro 60mm?",
+                answers: ["Pelo percutor", "Por ignição elétrica"],
+                correct: "Pelo percutor"
+            },
+            {
+                question: "Qual é o peso total do Morteiro 60mm?",
+                answers: ["16 kg", "17 kg", "18 kg", "19 kg"],
+                correct: "18 kg"
+            },
+            {
+                question: "Qual é o alcance máximo do Morteiro 60mm?",
+                answers: ["3000 metros", "3500 metros", "4000 metros", "4500 metros"],
+                correct: "4000 metros"
+            },
+            {
+                question: "Qual é o alcance mínimo do Morteiro 60mm?",
+                answers: ["150 metros", "200 metros", "250 metros", "300 metros"],
+                correct: "200 metros"
+            },
+            {
+                question: "O Morteiro 60mm divide-se em que partes?",
+                answers: ["Cano, Prato base, Bipé, Aparelho de pontaria", "Cano, Prato base, Bipe, Aparelho de disparo", "Cano, Suporte, Prato base, Aparelho de pontaria", "Cano, Suporte, Prato base, Aparelho de disparo"],
+                correct: "Cano, Prato base, Bipé, Aparelho de pontaria"
+            },
+            {
+                question: "Qual é a graduação e numeração do limbo no Morteiro 60mm?",
+                answers: ["Graduado de 0 a 6400 mils, Numerado de 200 em 200 mils, Referenciado de 25 em 25 mils", "Graduado de 0 a 6000 mils, Numerado de 100 em 100 mils, Referenciado de 50 em 50 mils", "Graduado de 0 a 6500 mils, Numerado de 150 em 150 mils, Referenciado de 30 em 30 mils", "Graduado de 0 a 6300 mils, Numerado de 300 em 300 mils, Referenciado de 100 em 100 mils"],
+                correct: "Graduado de 0 a 6400 mils, Numerado de 200 em 200 mils, Referenciado de 25 em 25 mils"
+            },
+            {
+                question: "Qual é a graduação e numeração do setor no Morteiro 60mm?",
+                answers: ["Graduado de 800 a 1460 mils, Numerado de 100 em 100 mils, Referenciado de 10 em 10 mils", "Graduado de 700 a 1500 mils, Numerado de 50 em 50 mils, Referenciado de 5 em 5 mils", "Graduado de 900 a 1600 mils, Numerado de 150 em 150 mils, Referenciado de 15 em 15 mils", "Graduado de 1000 a 1700 mils, Numerado de 200 em 200 mils, Referenciado de 20 em 20 mils"],
+                correct: "Graduado de 800 a 1460 mils, Numerado de 100 em 100 mils, Referenciado de 10 em 10 mils"
+            }
+        ];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadQuiz() {
+            shuffle(questions);
+            var quizForm = document.getElementById("quizForm");
+            quizForm.innerHTML = "";
+            for (var i = 0; i < questions.length; i++) {
+                var q = questions[i];
+                shuffle(q.answers);
+                var questionHTML = "<p><strong>Pergunta " + (i + 1) + ":</strong> " + q.question + "</p>";
+                for (var j = 0; j < q.answers.length; j++) {
+                    questionHTML += '<input type="radio" id="q' + i + 'a' + j + '" name="question' + i + '" value="' + q.answers[j] + '" onclick="lockAnswer(' + i + ', ' + j + ')">';
+                    questionHTML += '<label for="q' + i + 'a' + j + '">' + q.answers[j] + '</label><br>';
+                }
+                questionHTML += '<span id="feedback' + i + '"></span>';
+                quizForm.innerHTML += questionHTML + "<br>";
+            }
+
+            // Update progress
+            var progressBar = document.getElementById("progressBar");
+            progressBar.value = 0;
+            progressBar.max = questions.length;
+        }
+
+        function lockAnswer(questionIndex, answerIndex) {
+            var radios = document.getElementsByName('question' + questionIndex);
+            for (var i = 0; i < radios.length; i++) {
+                radios[i].disabled = true;
+            }
+
+            var feedback = document.getElementById('feedback' + questionIndex);
+            var userAnswer = radios[answerIndex].value;
+            if (userAnswer === questions[questionIndex].correct) {
+                feedback.textContent = "Correto!";
+                feedback.className = "correct-answer";
+            } else {
+                feedback.textContent = "Errado! A resposta correta é: " + questions[questionIndex].correct;
+                feedback.className = "incorrect-answer";
+            }
+
+            updateProgress();
+        }
+
+        function checkAnswers() {
+            var errorCount = 0;
+            var errorQuestions = [];
+            var answeredCount = 0;
+
+            for (var i = 0; i < questions.length; i++) {
+                var userAnswer = document.querySelector('input[name="question' + i + '"]:checked');
+                if (userAnswer) {
+                    answeredCount++;
+                    if (userAnswer.value !== questions[i].correct) {
+                        errorCount++;
+                        errorQuestions.push(i + 1);
+                    }
+                }
+            }
+
+            var resultMessage = document.getElementById("resultMessage");
+            var passMessage = document.getElementById("passMessage");
+            var percentage = ((questions.length - errorCount) / questions.length) * 100;
+
+            previousPercentages.push(percentage);
+            var averagePercentage = previousPercentages.reduce((a, b) => a + b, 0) / previousPercentages.length;
+            
+            if (errorCount > 3) {
+                passMessage.textContent = "Falhaste o quiz.";
+                passMessage.className = "fail";
+            } else {
+                passMessage.textContent = "Passaste o quiz.";
+                passMessage.className = "pass";
+            }
+
+            resultMessage.textContent = "Erraste " + errorCount + " de " + questions.length + " perguntas. Perguntas erradas: " + errorQuestions.join(", ");
+            var percentageMessage = document.getElementById("percentageMessage");
+            percentageMessage.textContent = "Percentagem de preparação: " + averagePercentage.toFixed(2) + "%";
+
+            loadQuiz();
+        }
+
+        function updateProgress() {
+            var progressBar = document.getElementById("progressBar");
+            var answeredCount = document.querySelectorAll('input[type="radio"]:checked').length;
+            progressBar.value = answeredCount;
+        }
+
+        window.onload = function() {
+            loadQuiz();
+        };
+    </script>
+</head>
+<body>
+    <h1>Quiz de Morteiros</h1>
+    <progress id="progressBar" value="0" max="50"></progress>
+    <form id="quizForm"></form>
+    <button type="button" onclick="checkAnswers()">Submeter</button>
+    <p id="resultMessage"></p>
+    <p id="passMessage"></p>
+    <p id="percentageMessage"></p>
+</body>
+</html>
